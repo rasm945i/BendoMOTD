@@ -11,6 +11,7 @@ import java.io.IOException;
 public class SimpleMotdPlugin extends JavaPlugin {
 
     // Compiled with Spigot 1.8.8
+    // Bendo MOTD
 
     private File configFile;
     private YamlConfiguration playerFile;

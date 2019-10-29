@@ -45,7 +45,8 @@ public class Motd {
                 doNewLine = true;
             }
 
-            builder.append(ChatColor.translateAlternateColorCodes('&', s));
+            // Reset colors on new line, as that is how it appears to work from a u
+            builder.append(ChatColor.translateAlternateColorCodes('&', "&r" + s));
 
         }
 

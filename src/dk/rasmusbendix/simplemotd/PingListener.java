@@ -51,7 +51,8 @@ public class PingListener implements Listener {
         List<Motd> list = new ArrayList<>();
 
         // Get each key and the 1-2 lines of text in the config.
-        plugin.getConfig().getKeys(false).forEach(key -> list.add(new Motd(plugin.getConfig().getStringList(key))));
+        plugin.getConfig().getConfigurationSection("motd.").getKeys(false)
+                .forEach(key -> list.add(new Motd(plugin.getConfig().getStringList("motd." + key))));
 
         return list;
 

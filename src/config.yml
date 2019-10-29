@@ -1,6 +1,7 @@
-first:
-- "Hi there"
-- "Random player"
-second:
-- "Oh hi there!"
-- "%player% :)"
+motd:
+  first:
+  - "%cHi there"
+  - "&aRandom &7player"
+  second:
+  - "&bOh hi there!"
+  - "&3%player% :)"

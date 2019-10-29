@@ -1,7 +1,7 @@
 motd:
   first:
   - "%cHi there"
-  - "&aRandom &7splayer"
+  - "&aRandom &7player"
   second:
   - "&bOh hi there!"
   - "&3%player% :)"

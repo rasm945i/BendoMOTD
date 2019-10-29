@@ -60,22 +60,44 @@ public class PingListener implements Listener {
 
 
     private Motd getRandomMOTD() {
-        return getRandomMOTD(true);
+        return getRandomMOTD(true, false, false);
+    }
+
+    public Motd getRandomMOTD(boolean canUsePlayername) {
+        return getRandomMOTD(canUsePlayername, false, false);
     }
 
 
-    private Motd getRandomMOTD(boolean canUsePlayername) {
+    private Motd getRandomMOTD(boolean canUsePlayername, boolean forceWithUsername, boolean forceWithoutUsername) {
 
         Random random = new Random();
         int value = random.nextInt(motdList.size());
+        int startValue = value;
         Motd motd = motdList.get(value);
-        if(motd.isUsingPlayerName() && !canUsePlayername) {
+
+        // TODO Refactor into a method instead of 2 identical loops
+        if(forceWithoutUsername || (motd.isUsingPlayerName() && !canUsePlayername)) {
 
             // Get next available MOTD that doesn't use player name
             while(motd.isUsingPlayerName()) {
                 value++;
                 if(value >= motdList.size())
                     value = 0;
+
+                if(value == startValue)
+                    break;
+                motd = motdList.get(value);
+            }
+
+        } else if(forceWithUsername && !motd.isUsingPlayerName()) {
+
+            while(!motd.isUsingPlayerName()) {
+                value++;
+                if(value >= motdList.size())
+                    value = 0;
+
+                if(value == startValue)
+                    break;
                 motd = motdList.get(value);
             }
 

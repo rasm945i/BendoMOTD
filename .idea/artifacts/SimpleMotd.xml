@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="SimpleMotd">
-    <output-path>$PROJECT_DIR$/out/artifacts/SimpleMotd</output-path>
-    <root id="archive" name="SimpleMotd.jar">
-      <element id="module-output" name="SimpleMOTD" />
-    </root>
-  </artifact>
-</component>

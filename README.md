@@ -1,2 +1,2 @@
-# SimpleMOTD
-Simple MOTD plugin for Spigot
+# BendoMOTD
+Simple at a level which Bendo can use it. MOTD plugin for Spigot

@@ -1,0 +1,4 @@
+main: dk.rasmusbendix.simplemotd.SimpleMotdPlugin
+author: rasm945i
+version: 1.0
+name: SimpleMotd

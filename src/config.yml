@@ -1,7 +1,13 @@
 motd:
   first:
-  - "%cHi there"
+  - "&cHi there"
   - "&aRandom &7player"
   second:
   - "&bOh hi there!"
   - "&3%player% :)"
+# If a player has joined before, should the plugin do its best to display a MOTD that contains the %player% placeholder?
+force-personalized-motd-if-available: true
+# If a player has never joined before, should the plugin only show messages that does NOT contain the %player% placeholder?
+force-guest-message-for-guests: true
+# If a player isn't found but a %player% placeholder is used in the message the player receives.
+guest-placeholder: "Guest"

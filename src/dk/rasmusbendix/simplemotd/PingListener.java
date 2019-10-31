@@ -34,13 +34,13 @@ public class PingListener implements Listener {
         String host = e.getAddress().getHostAddress().replace(".", "_"); // Dots are used to define new sections in YML
         SavedPlayer player = plugin.getPlayerManager().getPlayer(host);
 
-        Motd motd = getRandomMOTD(player != null);
+        Motd motd = getRandomMOTD(player == null, getForcePersonalizedMotdIfAvailable(), getForceGuestMessageForGuests());
         e.setMotd(
                 applyPlaceholders(
                         motd.getMotdAsString(),
                         e.getNumPlayers(),
                         e.getMaxPlayers(),
-                        player == null ? "guest" : player.getUsername() // Display N/A if the player hasn't played before
+                        player == null ? getGuestPlaceholder() : player.getUsername() // Display N/A if the player hasn't played before
                 )
         );
     }
@@ -68,34 +68,34 @@ public class PingListener implements Listener {
     }
 
 
-    private Motd getRandomMOTD(boolean canUsePlayername, boolean forceWithUsername, boolean forceWithoutUsername) {
+    private Motd getRandomMOTD(boolean isGuest, boolean forceWithUsername, boolean forceWithoutUsername) {
 
         Random random = new Random();
         int value = random.nextInt(motdList.size());
         int startValue = value;
         Motd motd = motdList.get(value);
 
-        // TODO Refactor into a method instead of 2 identical loops
-        if(forceWithoutUsername || (motd.isUsingPlayerName() && !canUsePlayername)) {
+        if(!isGuest && forceWithUsername) {
 
-            // Get next available MOTD that doesn't use player name
-            while(motd.isUsingPlayerName()) {
+            // Loop nr. 1
+            while(!motd.isUsingPlayerName()) {
                 value++;
                 if(value >= motdList.size())
                     value = 0;
-
                 if(value == startValue)
                     break;
                 motd = motdList.get(value);
             }
 
-        } else if(forceWithUsername && !motd.isUsingPlayerName()) {
+        }
 
-            while(!motd.isUsingPlayerName()) {
+        else if(isGuest || forceWithoutUsername) {
+
+            // Loop nr. 2. My brain cannot figure out how to make this a method :s
+            while(motd.isUsingPlayerName()) {
                 value++;
                 if(value >= motdList.size())
                     value = 0;
-
                 if(value == startValue)
                     break;
                 motd = motdList.get(value);
@@ -105,6 +105,18 @@ public class PingListener implements Listener {
 
         return motd;
 
+    }
+
+    public boolean getForcePersonalizedMotdIfAvailable() {
+        return plugin.getConfig().getBoolean("force-personalized-motd-if-available", true);
+    }
+
+    public boolean getForceGuestMessageForGuests() {
+        return plugin.getConfig().getBoolean("force-guest-message-for-guests", true);
+    }
+
+    public String getGuestPlaceholder() {
+        return plugin.getConfig().getString("guest-placeholder", "Guest");
     }
 
 

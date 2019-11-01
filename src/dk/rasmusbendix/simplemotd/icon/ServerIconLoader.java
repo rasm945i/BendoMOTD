@@ -12,12 +12,12 @@ import java.util.Random;
 public class ServerIconLoader {
 
     private SimpleMotdPlugin plugin;
-    private ArrayList<BufferedImage> base64Icons;
+    private ArrayList<BufferedImage> icons;
     private Random random;
 
     public ServerIconLoader(SimpleMotdPlugin plugin) {
         this.plugin      = plugin;
-        this.base64Icons = new ArrayList<>();
+        this.icons = new ArrayList<>();
         this.random      = new Random();
         loadImages();
     }
@@ -40,7 +40,7 @@ public class ServerIconLoader {
 
         for(File file : files) {
             try {
-                base64Icons.add(ImageIO.read(file));
+                icons.add(ImageIO.read(file));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -50,9 +50,9 @@ public class ServerIconLoader {
 
 
     public BufferedImage getRandomIcon() {
-        if(base64Icons.isEmpty())
+        if(icons.isEmpty())
             return null;
-        return base64Icons.get(random.nextInt(base64Icons.size()));
+        return icons.get(random.nextInt(icons.size()));
     }
 
 }

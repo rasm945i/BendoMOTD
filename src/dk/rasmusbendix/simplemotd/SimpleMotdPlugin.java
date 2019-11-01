@@ -1,6 +1,7 @@
 package dk.rasmusbendix.simplemotd;
 
 import dk.rasmusbendix.simplemotd.players.PlayerManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +16,7 @@ public class SimpleMotdPlugin extends JavaPlugin {
 
     private File configFile;
     private YamlConfiguration playerFile;
+    private boolean usingPlaceholderAPI;
 
     private PlayerManager playerManager;
 
@@ -23,6 +25,14 @@ public class SimpleMotdPlugin extends JavaPlugin {
         getLogger().info("Prepare for epic MOTDs by rasm945i from https://en.rasmusbendix.dk");
         saveDefaultConfig();
         createPlayerFile();
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            getLogger().info("Successfully found PlaceholderAPI!");
+            usingPlaceholderAPI = true;
+        } else {
+            getLogger().info("PlaceholderAPI not found. Continuing without support for PAPI Placeholders.");
+            usingPlaceholderAPI = false;
+        }
 
         playerManager = new PlayerManager(this);
 
@@ -42,6 +52,10 @@ public class SimpleMotdPlugin extends JavaPlugin {
 
     public YamlConfiguration getPlayerFile() {
         return playerFile;
+    }
+
+    public boolean isUsingPlaceholderAPI() {
+        return usingPlaceholderAPI;
     }
 
     private void savePlayerFile() {

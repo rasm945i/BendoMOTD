@@ -1,6 +1,9 @@
 package dk.rasmusbendix.simplemotd;
 
 import dk.rasmusbendix.simplemotd.players.SavedPlayer;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -35,12 +38,13 @@ public class PingListener implements Listener {
         SavedPlayer player = plugin.getPlayerManager().getPlayer(host);
 
         Motd motd = getRandomMOTD(player == null, getForcePersonalizedMotdIfAvailable(), getForceGuestMessageForGuests());
+
         e.setMotd(
                 applyPlaceholders(
                         motd.getMotdAsString(),
                         e.getNumPlayers(),
                         e.getMaxPlayers(),
-                        player == null ? getGuestPlaceholder() : player.getUsername() // Display N/A if the player hasn't played before
+                        player // Display N/A if the player hasn't played before
                 )
         );
     }
@@ -120,11 +124,26 @@ public class PingListener implements Listener {
     }
 
 
-    private String applyPlaceholders(String s, int online, int max, String player) {
+    private String applyPlaceholders(String s, int online, int max, SavedPlayer player) {
+        OfflinePlayer op;
+        String playerName;
+
+        if(player != null) {
+            op = Bukkit.getOfflinePlayer(player.getUuid());
+            playerName = op.getName();
+        } else {
+            op = null;
+            playerName = getGuestPlaceholder();
+        }
+
+        if(plugin.isUsingPlaceholderAPI()) {
+            s = PlaceholderAPI.setPlaceholders(op, s);
+        }
+
         return s
                 .replace("%online%", String.valueOf(online))
                 .replace("%max%", String.valueOf(max))
-                .replace("%player%", player);
+                .replace("%player%", playerName);
     }
 
 }

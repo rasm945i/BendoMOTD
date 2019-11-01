@@ -11,3 +11,5 @@ force-personalized-motd-if-available: true
 force-guest-message-for-guests: true
 # If a player isn't found but a %player% placeholder is used in the message the player receives.
 guest-placeholder: "Guest"
+# Should the plugin randomly choose a server icon from the 'icons' folder? NOTE: Icons must be 64x64 pixels and in the .png format!
+random-server-icon: false

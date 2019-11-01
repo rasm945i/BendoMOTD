@@ -1,5 +1,6 @@
 package dk.rasmusbendix.simplemotd;
 
+import dk.rasmusbendix.simplemotd.icon.ServerIconLoader;
 import dk.rasmusbendix.simplemotd.players.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -11,13 +12,15 @@ import java.io.IOException;
 
 public class SimpleMotdPlugin extends JavaPlugin {
 
-    // Compiled with Spigot 1.8.8
+    // Compiled with Spigot 1.8.8 and PlaceholderAPI 2.10.4
     // Bendo MOTD
 
     private File configFile;
     private YamlConfiguration playerFile;
     private boolean usingPlaceholderAPI;
+    private boolean randomServerIcon;
 
+    private ServerIconLoader serverIconLoader;
     private PlayerManager playerManager;
 
     @Override
@@ -25,6 +28,7 @@ public class SimpleMotdPlugin extends JavaPlugin {
         getLogger().info("Prepare for epic MOTDs by rasm945i from https://en.rasmusbendix.dk");
         saveDefaultConfig();
         createPlayerFile();
+        randomServerIcon = getConfig().getBoolean("random-server-icon", false);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("Successfully found PlaceholderAPI!");
@@ -34,9 +38,11 @@ public class SimpleMotdPlugin extends JavaPlugin {
             usingPlaceholderAPI = false;
         }
 
-        playerManager = new PlayerManager(this);
+        playerManager    = new PlayerManager(this);
+        serverIconLoader = new ServerIconLoader(this);
 
         new PingListener(this);
+        getLogger().info("Is using random server icon? " + isUsingRandomServerIcon());
     }
 
     @Override
@@ -50,12 +56,20 @@ public class SimpleMotdPlugin extends JavaPlugin {
         return playerManager;
     }
 
+    public ServerIconLoader getServerIconLoader() {
+        return serverIconLoader;
+    }
+
     public YamlConfiguration getPlayerFile() {
         return playerFile;
     }
 
     public boolean isUsingPlaceholderAPI() {
         return usingPlaceholderAPI;
+    }
+
+    public boolean isUsingRandomServerIcon() {
+        return randomServerIcon;
     }
 
     private void savePlayerFile() {

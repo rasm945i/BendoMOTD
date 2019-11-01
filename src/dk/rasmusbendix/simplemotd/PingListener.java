@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,6 +48,25 @@ public class PingListener implements Listener {
                         player // Display N/A if the player hasn't played before
                 )
         );
+
+
+        if(plugin.isUsingRandomServerIcon()) {
+            BufferedImage icon = plugin.getServerIconLoader().getRandomIcon();
+
+            if(icon == null) {
+                plugin.getLogger().warning("Failed to load any server icons! Make sure to put them in the 'plugins/BendoMOTD/icons' folder.");
+                return;
+            }
+
+            try {
+                e.setServerIcon(Bukkit.loadServerIcon(icon));
+            } catch (Exception ex) {
+                plugin.getLogger().warning("Failed to set server icon! Icon dimensions: " + icon.getWidth() + "x" + icon.getHeight());
+                ex.printStackTrace();
+            }
+
+        }
+
     }
 
 

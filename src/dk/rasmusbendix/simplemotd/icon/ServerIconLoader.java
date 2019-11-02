@@ -7,17 +7,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class ServerIconLoader {
 
     private SimpleMotdPlugin plugin;
-    private ArrayList<BufferedImage> icons;
+    private HashMap<String, BufferedImage> icons;
     private Random random;
 
     public ServerIconLoader(SimpleMotdPlugin plugin) {
         this.plugin      = plugin;
-        this.icons = new ArrayList<>();
+        this.icons       = new HashMap<>();
         this.random      = new Random();
         loadImages();
     }
@@ -40,19 +42,28 @@ public class ServerIconLoader {
 
         for(File file : files) {
             try {
-                icons.add(ImageIO.read(file));
+                icons.put(file.getName(), ImageIO.read(file));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+        for(String str : icons.keySet()) {
+            System.out.println("Filename : " + str);
+        }
+
     }
 
+    public BufferedImage getIcon(String name) {
+        return icons.getOrDefault(name, null);
+    }
 
     public BufferedImage getRandomIcon() {
         if(icons.isEmpty())
             return null;
-        return icons.get(random.nextInt(icons.size()));
+
+        List<String> keys = new ArrayList<>(icons.keySet());
+        return icons.get(keys.get(random.nextInt(keys.size())));
     }
 
 }

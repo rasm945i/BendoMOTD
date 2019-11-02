@@ -35,10 +35,12 @@ public class PingListener implements Listener {
 
     @EventHandler
     public void onPing(ServerListPingEvent e) {
+
         String host = e.getAddress().getHostAddress().replace(".", "_"); // Dots are used to define new sections in YML
         SavedPlayer player = plugin.getPlayerManager().getPlayer(host);
+        boolean returningUser = player != null;
 
-        Motd motd = getRandomMOTD(player == null, getForcePersonalizedMotdIfAvailable(), getForceGuestMessageForGuests());
+        Motd motd = getRandomMOTD(!returningUser, getForcePersonalizedMotdIfAvailable(), getForceGuestMessageForGuests());
 
         e.setMotd(
                 applyPlaceholders(
@@ -50,23 +52,54 @@ public class PingListener implements Listener {
         );
 
 
-        if(plugin.isUsingRandomServerIcon()) {
-            BufferedImage icon = plugin.getServerIconLoader().getRandomIcon();
+        // Forcing an Icon to a returning user
+        if(returningUser && !getIconForReturningUsers().equalsIgnoreCase("none")) {
 
-            if(icon == null) {
-                plugin.getLogger().warning("Failed to load any server icons! Make sure to put them in the 'plugins/BendoMOTD/icons' folder.");
-                return;
-            }
-
-            try {
-                e.setServerIcon(Bukkit.loadServerIcon(icon));
-            } catch (Exception ex) {
-                plugin.getLogger().warning("Failed to set server icon! Icon dimensions: " + icon.getWidth() + "x" + icon.getHeight());
-                ex.printStackTrace();
-            }
+            setIcon(getIconForReturningUsers(), e);
 
         }
 
+        // Forcing an Icon to a new user
+        else if(!returningUser && !getIconForNewUsers().equalsIgnoreCase("none")) {
+
+            setIcon(getIconForNewUsers(), e);
+
+        }
+
+        // Forcing a random icon
+        else if(plugin.isUsingRandomServerIcon()) {
+
+            setIcon(plugin.getServerIconLoader().getRandomIcon(), e);
+
+        }
+
+    }
+
+    private void setIcon(String iconName, ServerListPingEvent e) {
+
+        BufferedImage icon = plugin.getServerIconLoader().getIcon(iconName);
+        if(icon == null) {
+            plugin.getLogger().warning("Failed to find icon named " + iconName);
+            return;
+        }
+
+        setIcon(icon, e);
+
+    }
+
+    private void setIcon(BufferedImage icon, ServerListPingEvent e) {
+
+        if(icon == null) {
+            plugin.getLogger().warning("Failed to find icon!");
+            return;
+        }
+
+        try {
+            e.setServerIcon(Bukkit.loadServerIcon(icon));
+        } catch (Exception ex) {
+            plugin.getLogger().warning("Failed to set server icon! Icon dimensions: " + icon.getWidth() + "x" + icon.getHeight());
+            ex.printStackTrace();
+        }
     }
 
 
@@ -137,6 +170,14 @@ public class PingListener implements Listener {
 
     public boolean getForceGuestMessageForGuests() {
         return plugin.getConfig().getBoolean("force-guest-message-for-guests", true);
+    }
+
+    public String getIconForNewUsers() {
+        return plugin.getConfig().getString("new-users-icon", "none");
+    }
+
+    public String getIconForReturningUsers() {
+        return plugin.getConfig().getString("returning-users-icon", "none");
     }
 
     public String getGuestPlaceholder() {

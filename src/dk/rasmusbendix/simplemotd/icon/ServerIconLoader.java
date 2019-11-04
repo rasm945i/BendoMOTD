@@ -54,6 +54,10 @@ public class ServerIconLoader {
 
     }
 
+    public void removeFromPool(String name) {
+        icons.remove(name);
+    }
+
     public BufferedImage getIcon(String name) {
         return icons.getOrDefault(name, null);
     }

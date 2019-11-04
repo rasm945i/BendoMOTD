@@ -1,5 +1,5 @@
 main: dk.rasmusbendix.simplemotd.SimpleMotdPlugin
 author: rasm945i
-version: 1.5
+version: 1.6
 softdepend: [PlaceholderAPI]
 name: BendoMOTD

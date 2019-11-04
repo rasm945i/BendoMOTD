@@ -18,11 +18,33 @@ public class PingListener implements Listener {
 
     private SimpleMotdPlugin plugin;
     private List<Motd> motdList;
+    private BufferedImage guestIcon;
+    private BufferedImage returningUserIcon;
 
     public PingListener(SimpleMotdPlugin plugin) {
         this.plugin = plugin;
         this.motdList = fetchMotds();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        setupIcons();
+    }
+
+    public void setupIcons() {
+        guestIcon = setupUniqueIcon(getIconForNewUsers());
+        returningUserIcon = setupUniqueIcon(getIconForReturningUsers());
+    }
+
+    private BufferedImage setupUniqueIcon(String iconName) {
+        BufferedImage icon;
+        if(iconName.equalsIgnoreCase("none")) {
+            icon = null;
+        } else {
+            icon = plugin.getServerIconLoader().getIcon(iconName);
+            plugin.getServerIconLoader().removeFromPool(iconName);
+            if(icon == null) {
+                plugin.getLogger().warning("Failed to find icon named: " + iconName);
+            }
+        }
+        return icon;
     }
 
 
@@ -53,16 +75,16 @@ public class PingListener implements Listener {
 
 
         // Forcing an Icon to a returning user
-        if(returningUser && !getIconForReturningUsers().equalsIgnoreCase("none")) {
+        if(returningUser && returningUserIcon != null) {
 
-            setIcon(getIconForReturningUsers(), e);
+            setIcon(returningUserIcon, e);
 
         }
 
         // Forcing an Icon to a new user
-        else if(!returningUser && !getIconForNewUsers().equalsIgnoreCase("none")) {
+        else if(!returningUser && guestIcon != null) {
 
-            setIcon(getIconForNewUsers(), e);
+            setIcon(guestIcon, e);
 
         }
 
@@ -178,6 +200,14 @@ public class PingListener implements Listener {
 
     public String getIconForReturningUsers() {
         return plugin.getConfig().getString("returning-users-icon", "none");
+    }
+
+    public boolean removeGuestIconFromPool() {
+        return plugin.getConfig().getBoolean("remove-new-users-icon-from-random-pool", true);
+    }
+
+    public boolean removeReturningIconFromPool() {
+        return plugin.getConfig().getBoolean("remove-returning-users-icon-from-random-pool", true);
     }
 
     public String getGuestPlaceholder() {

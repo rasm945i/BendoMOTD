@@ -13,7 +13,16 @@ force-guest-message-for-guests: true
 guest-placeholder: "Guest"
 # Should the plugin randomly choose a server icon from the 'icons' folder? NOTE: Icons must be 64x64 pixels and in the .png format!
 random-server-icon: false
+
+### The options below this is recommended to be left as default, as they can be confusing
+### If you wish to have random icons, specific icons for returning users
+### and specific icon for guests then the settings below are for you.
+
 # Force icon for new users. None to disable
 new-users-icon: none
+# Remove the "new-users-icon" from the pool of random icons for returning users, if a "returning-users-icon" isn't specified?
+remove-new-users-icon-from-random-pool: true
 # Force icon for returning users. None to disable
 returning-users-icon: none
+# Remove the "returning-users-icon" from the pool of random icons for new users, if a "new-users-icon" isn't specified?
+remove-returning-users-icon-from-random-pool: true
